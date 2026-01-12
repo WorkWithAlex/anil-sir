@@ -31,13 +31,17 @@ class EnquiryController extends Controller
 
     public function store(Request $request)
     {
+        // If user is NOT logged in, defer submission
+        if (!auth()->check()) {
+            session([
+                'pending_enquiry' => $request->all()
+            ]);
 
-        if(auth()->id() == null) {
-            redirect()->back()->with('error', 'You must be logged in to submit an enquiry.');
-        }else{
-            $request->merge(['user_id' => auth()->id()]);   
+            return redirect()->route('login')
+                ->with('info', 'Please login to submit your staffing requirement.');
         }
 
+        // User is logged in → proceed normally
         $validated = $request->validate([
             'company_name' => 'required|string|max:255',
             'contact_person' => 'required|string|max:255',
@@ -57,8 +61,31 @@ class EnquiryController extends Controller
             is_string($v) ? trim($v) : $v
         )->toArray();
 
+        $validated['user_id'] = auth()->id();
+
         $enquiry = Enquiry::create($validated);
-        
+
+        $this->sendNotifications($enquiry);
+
+        return redirect()->route('user.dashboard')
+            ->with('success', 'Your staffing requirement has been submitted successfully.');
+    }
+
+    public function replay()
+    {
+        $data = session()->pull('pending_enquiry');
+
+        if (!$data) {
+            return redirect()->route('user.dashboard');
+        }
+
+        request()->merge($data);
+
+        return $this->store(request());
+    }
+
+    protected function sendNotifications(Enquiry $enquiry)
+    {
         try {
             Mail::to(config('mail.admin_email'))
                 ->send(new AdminEnquiryNotification($enquiry));
@@ -70,8 +97,7 @@ class EnquiryController extends Controller
                 'error' => $e->getMessage()
             ]);
         }
-
-        return redirect()->back()->with('success', 'Your staffing requirement has been submitted successfully.');
+        
     }
 
 }

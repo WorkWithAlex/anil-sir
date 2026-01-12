@@ -22,7 +22,7 @@ class EnquiryAdminController extends Controller
     public function updateStatus(Request $request, Enquiry $enquiry)
     {
         $request->validate([
-            'status' => 'required|in:new,contacted,closed',
+            'status' => 'required|in:New,In Review,Contacted,Closed',
         ]);
 
         $enquiry->update([

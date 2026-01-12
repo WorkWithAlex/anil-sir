@@ -3,49 +3,40 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EnquiryController;
+use App\Http\Controllers\User\EnquiryUserController;
 use App\Http\Controllers\Admin\EnquiryAdminController;
 
 use App\Models\Enquiry;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Public pages
+Route::get('/', [EnquiryController::class, 'home'])->name('home');
+Route::get('/about', action: [EnquiryController::class, 'about'])->name('about');
+Route::get('/contact', [EnquiryController::class, 'contact'])->name('contact');
+Route::get('/staffing-requirement', [EnquiryController::class, 'create'])->name('enquiry.create');
+Route::post('/staffing-requirement', [EnquiryController::class, 'store'])->middleware('throttle:10,1')->name('enquiry.store');
 
-Route::get('/dashboard', function () {
-    $user = Auth::user();
+Route::middleware('auth')->get('/enquiry/replay', [EnquiryController::class, 'replay'])->name('enquiry.replay');
 
-    $enquiries = $user->role === 'admin'
-        ? Enquiry::latest()->paginate(10)
-        : Enquiry::where('user_id', $user->id)->latest()->paginate(10);
-
-    return view('dashboard', compact('enquiries'));
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+// Profile management
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Public pages
-Route::get('/', [EnquiryController::class, 'home'])->name('home');
-Route::get('/about', [EnquiryController::class, 'about'])->name('about');
-Route::get('/contact', [EnquiryController::class, 'contact'])->name('contact');
-Route::get('/staffing-requirement', [EnquiryController::class, 'create'])->name('enquiry.create');
-Route::post('/staffing-requirement', [EnquiryController::class, 'store'])->middleware('throttle:10,1')->name('enquiry.store');
-
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard/enquiries', [EnquiryAdminController::class, 'index'])
-        ->name('admin.enquiries.index');
-
-    Route::get('/dashboard/enquiries/{enquiry}', [EnquiryAdminController::class, 'show'])
-        ->name('admin.enquiries.show');
-
-    Route::patch('/dashboard/enquiries/{enquiry}/status', [EnquiryAdminController::class, 'updateStatus'])
-        ->name('admin.enquiries.updateStatus');
+// Admin routes for managing enquiries
+Route::middleware(['auth', 'verified', 'super_admin'])->group(function () {
+    Route::get('/dashboard', [EnquiryAdminController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/enquiries', [EnquiryAdminController::class, 'index'])->name('admin.enquiries.index');
+    Route::get('/dashboard/enquiries/{enquiry}', [EnquiryAdminController::class, 'show'])->name('admin.enquiries.show');
+    Route::patch('/dashboard/enquiries/{enquiry}/status', [EnquiryAdminController::class, 'updateStatus'])->name('admin.enquiries.updateStatus');
+    
 });
 
-
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/my-dashboard', [EnquiryUserController::class, 'index'])->name('user.dashboard');
+    Route::get('/my-dashboard/enquiries', [EnquiryUserController::class, 'index'])->name('user.dashboard');
+    Route::get('/my-dashboard/enquiries/{enquiry}', [EnquiryUserController::class, 'show'])->name('user.enquiries.show');
+});
 
 require __DIR__.'/auth.php';

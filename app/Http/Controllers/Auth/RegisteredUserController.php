@@ -36,6 +36,7 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::create([
+            'role' => 'user',
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -45,6 +46,12 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        if (session()->has('pending_enquiry')) {
+            return redirect()->route('enquiry.replay');
+        }
+        
+        return auth()->user()->role === 'super_admin'
+            ? redirect()->intended('/dashboard')
+            : redirect()->intended('/my-dashboard');
     }
 }

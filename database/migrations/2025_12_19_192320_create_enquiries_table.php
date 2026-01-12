@@ -30,7 +30,7 @@ return new class extends Migration {
             $table->text('message')->nullable();
 
             // Status tracking
-            $table->enum('status', ['new', 'contacted', 'closed'])->default('new');
+            $table->enum('status', ['New', 'In Review', 'Contacted', 'Closed'])->default('new');
 
             $table->foreign('user_id')->references('id')->on('users');
 
