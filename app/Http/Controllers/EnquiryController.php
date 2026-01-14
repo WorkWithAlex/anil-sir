@@ -75,7 +75,7 @@ class EnquiryController extends Controller
 
         $enquiry = Enquiry::create($validated);
 
-        $this->sendNotifications($enquiry);
+        $this->sendNotifications($enquiry, $request);
 
         return redirect()->route('user.dashboard')
             ->with('success', 'Your staffing requirement has been submitted successfully.');
@@ -94,14 +94,16 @@ class EnquiryController extends Controller
         return $this->store(request());
     }
     
-    protected function sendNotifications(Enquiry $enquiry)
+    protected function sendNotifications(Enquiry $enquiry, Request $request)
     {
         try {
+            
             Mail::to(config('mail.admin_email'))
                 ->send(new AdminEnquiryNotification($enquiry));
 
-            Mail::to($enquiry->email)
+            Mail::to($request->email)
                 ->send(new UserEnquiryAcknowledgement($enquiry));
+
         } catch (\Throwable $e) {
             logger()->error('Mail failed', [
                 'error' => $e->getMessage()

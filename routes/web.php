@@ -41,4 +41,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/my-dashboard/enquiries/{enquiry}', [EnquiryUserController::class, 'show'])->name('user.enquiries.show');
 });
 
+if (app()->environment() != 'production') {
+    require base_path('routes/mail-preview.php');
+}
+
 require __DIR__.'/auth.php';

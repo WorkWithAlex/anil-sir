@@ -9,17 +9,31 @@
     {{-- Header --}}
     <div class="flex">
         <div class="flex-1">
-            <h2 class="text-2xl font-semibold">
-                {{ $enquiry->job_title }}
-            </h2>
-            {{ $enquiry->created_at->format('M. j, Y, g:i a') }}
+            <h2 class="text-2xl font-semibold">{{ $enquiry->job_title }}</h2>
+            <p class="text-sm text-gray-500">
+                Submitted on {{ $enquiry->created_at->format('M. j, Y, g:i a') }}
+            </p>
         </div>
-        <p class="flex-1 text-right">
+        <div class="flex flex-col items-end gap-4">
             <a href="{{ route('admin.enquiries.index') }}"
                class="text-sm font-medium text-slate-600 hover:text-slate-900">
                 ← Back to enquiries
             </a>
-        </p>
+            {{-- Status Badge --}}
+            <span>
+                Status : 
+                <span class=" px-4 py-1.5 rounded-full text-sm font-semibold
+                    @if(($enquiry->status ?? 'New') === 'New') bg-amber-50 text-amber-700 border border-amber-200
+                    @elseif(($enquiry->status ?? 'New') === 'In Review') bg-blue-50 text-blue-700 border border-blue-200
+                    @elseif(($enquiry->status ?? 'New') === 'Contacted') bg-purple-50 text-purple-700 border border-purple-200
+                    @elseif(($enquiry->status ?? 'New') === 'Closed') bg-emerald-50 text-emerald-700 border border-emerald-200
+                    @else bg-slate-100 text-slate-700 border border-slate-200
+                    @endif
+                ">
+                    {{ ucfirst(str_replace('_', ' ', $enquiry->status && $enquiry->status !== 'new' ? $enquiry->status : 'pending')) }}
+                </span>
+            </span>
+        </div>
     </div>
 
     @if(session('success'))
@@ -29,10 +43,10 @@
     @endif
 
     {{-- Meta + Status --}}
-    <div class="grid md:grid-cols-3 gap-6">
+    <div class="grid md:grid-cols-5 gap-6">
 
         {{-- Company info --}}
-        <div class="md:col-span-2 bg-white border border-slate-200 rounded-2xl p-8 space-y-4">
+        <div class="md:col-span-3 bg-white border border-slate-200 rounded-2xl p-8 space-y-4">
             <h3 class="text-lg font-semibold">
                 Company information
             </h3>
@@ -69,46 +83,30 @@
         </div>
 
         {{-- Status card --}}
-        <div class="bg-white border border-slate-200 rounded-2xl p-8">
-            <h3 class="text-lg font-semibold mb-4">
-                Status
-            </h3>
-
-            @php
-                $statusClasses = match($enquiry->status) {
-                    'New' => 'bg-amber-50 text-amber-700 border border-amber-200',
-                    'In Review' => 'bg-blue-50 text-blue-700 border border-blue-200',
-                    'Contacted' => 'bg-purple-50 text-purple-700 border border-purple-200',
-                    'Closed' => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-                    default => 'bg-slate-100 text-slate-700 border border-slate-200',
-                };
-            @endphp
-
-            <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium {{ $statusClasses }}">
-                {{ ucfirst($enquiry->status) }}
-            </span>
-
-            <form method="POST"
-                  action="{{ route('admin.enquiries.updateStatus', $enquiry) }}"
-                  class="mt-6 space-y-4">
+        <div class="md:col-span-2 bg-white border border-slate-200 rounded-2xl p-8">
+            
+            <form method="POST" action="{{ route('admin.enquiries.updateStatus', $enquiry) }}">
+                
                 @csrf
                 @method('PATCH')
-
-                <hr />
-
-                <label class="block text-sm font-medium text-slate-700">
-                    Change status
-                </label>
-
-                <select name="status" class="w-full rounded-lg border-slate-300 focus:border-slate-900 focus:ring-slate-900 text-sm">
+                
+                <label class="text-lg font-semibold"> Change status : </label>
+                <select name="status" class="w-full mt-2 mb-4 rounded-lg border-slate-300 focus:border-slate-900 focus:ring-slate-900 text-sm">
                     <option value="New" @selected($enquiry->status === 'New')>New</option>
                     <option value="In Review" @selected($enquiry->status === 'In Review')>In Review</option>
                     <option value="Contacted" @selected($enquiry->status === 'Contacted')>Contacted</option>
                     <option value="Closed" @selected($enquiry->status === 'Closed')>Closed</option>
                 </select>
+                
+                <label class="text-lg font-semibold"> Notes / Remark : </label>
+                <textarea 
+                    name="admin_remarks" 
+                    rows="4" 
+                    class="w-full mt-2 rounded-lg border-slate-300 focus:border-slate-900 focus:ring-slate-900 text-sm" 
+                    {{-- placeholder="Add a remark...">{{ old('remark', $enquiry->remark) }}</textarea> --}}
+                    placeholder="Add a remark...">{{ $enquiry->admin_remarks }}</textarea>
 
-                <button type="submit"
-                        class="w-full inline-flex justify-center rounded-lg bg-slate-900 px-4 py-2.5 text-white text-sm font-medium hover:bg-slate-800">
+                <button type="submit" class="mt-4 w-full inline-flex justify-center rounded-lg bg-slate-900 px-4 py-2.5 text-white text-sm font-medium hover:bg-slate-800">
                     Save status
                 </button>
 

@@ -1,15 +1,29 @@
-<p>Hello {{ $enquiry->contact_person }},</p>
+<x-email-layout
+    emailTitle="We received your staffing requirement"
+    emailSubtitle="Our team will review it shortly"
+>
+    <p style="margin-top:0;">
+        Hello <strong>{{ $enquiry->contact_person }}</strong>,
+    </p>
 
-<p>
-Thank you for sharing your staffing requirement with us.
-Our team has received the details and will review them shortly.
-</p>
+    <p>
+        Thank you for sharing your staffing requirement with us.
+        We have successfully received the details and our team
+        will review them shortly.
+    </p>
 
-<p>
-One of our consultants will get in touch with you soon to understand your needs better.
-</p>
+    <p>
+        One of our consultants will get in touch with you soon
+        to better understand your needs and discuss the next steps.
+    </p>
 
-<p>
-Regards,<br>
-IT Staffing Team
-</p>
+    <p>
+        In the meantime, you can be assured that your request
+        is securely recorded and being processed.
+    </p>
+
+    <p style="margin-top:24px;">
+        Regards,<br>
+        <strong>Omni Outsource Team</strong>
+    </p>
+</x-email-layout>

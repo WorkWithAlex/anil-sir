@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Enquiry;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EnquiryStatusUpdated;
 
 class EnquiryAdminController extends Controller
 {
@@ -27,7 +29,11 @@ class EnquiryAdminController extends Controller
 
         $enquiry->update([
             'status' => $request->status,
+            'admin_remarks' => $request->admin_remarks ?? $enquiry->admin_remarks,
         ]);
+
+        // Send email notification to the user about status update
+        Mail::to($enquiry->email)->send(new EnquiryStatusUpdated($enquiry));
 
         return redirect()->back()->with('success', 'Enquiry status updated.');
     }

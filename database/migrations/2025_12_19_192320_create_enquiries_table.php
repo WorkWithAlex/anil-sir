@@ -29,6 +29,9 @@ return new class extends Migration {
             // Additional info
             $table->text('message')->nullable();
 
+            // Admin notes/remarks
+            $table->text('admin_remarks')->nullable();
+
             // Status tracking
             $table->enum('status', ['New', 'In Review', 'Contacted', 'Closed'])->default('new');
 

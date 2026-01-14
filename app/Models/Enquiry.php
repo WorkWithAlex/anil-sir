@@ -23,6 +23,7 @@ class Enquiry extends Model
         'budget',
         'timeline',
         'message',
+        'admin_remarks',
         'status',
     ];
 }
