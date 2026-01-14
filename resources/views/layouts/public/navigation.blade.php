@@ -1,13 +1,17 @@
 <header
     x-data="{ open: false }"
-    class="sticky top-0 z-50 border-b border-slate-200 bg-white">
+    class="py-2 sticky top-0 z-50 border-b border-slate-200 bg-white shadow-sm">
 
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
         {{-- Brand --}}
-        <a href="{{ route('home') }}"
-           class="text-lg font-semibold text-slate-900">
-            Staffing App
+        <a href="{{ route('home') }}" class="text-lg font-semibold text-slate-900">
+            <div class="h-16 flex items-center gap-3">
+                <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name', 'Staffing App') }} Logo" class="max-h-16">
+                <div class="">
+                    OMNI OUTSOURCE
+                </div>
+            </div>
         </a>
 
         {{-- Desktop Navigation --}}

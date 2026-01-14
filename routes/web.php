@@ -11,6 +11,8 @@ use App\Models\Enquiry;
 // Public pages
 Route::get('/', [EnquiryController::class, 'home'])->name('home');
 Route::get('/about', action: [EnquiryController::class, 'about'])->name('about');
+Route::get('/privacy-policy', [EnquiryController::class, 'privacyPolicy'])->name('privacyPolicy');
+Route::get('/terms-conditions', [EnquiryController::class, 'termsConditions'])->name('termsConditions');
 Route::get('/contact', [EnquiryController::class, 'contact'])->name('contact');
 Route::get('/staffing-requirement', [EnquiryController::class, 'create'])->name('enquiry.create');
 Route::post('/staffing-requirement', [EnquiryController::class, 'store'])->middleware('throttle:10,1')->name('enquiry.store');

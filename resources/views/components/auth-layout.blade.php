@@ -11,6 +11,7 @@
 
         {{-- Left branding --}}
         <div class="hidden md:flex flex-col justify-center px-10 bg-gray-900 text-white">
+            <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }} Logo" class="mb-6 w-48">
             <h1 class="text-3xl font-bold mb-4">
                 {{ config('app.name') }}
             </h1>

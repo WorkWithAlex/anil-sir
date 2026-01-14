@@ -22,7 +22,7 @@
             {{-- Sidebar --}}
             {{-- <aside class="w-64 border-r border-slate-200 px-6 py-8 hidden md:block">
                 <a href="{{ route('dashboard') }}" class="block text-lg font-semibold mb-10">
-                    Staffing App
+                    {{env('APP_NAME', 'Omni Outsource')}}
                 </a>
 
                 <nav class="space-y-6 text-sm font-medium">

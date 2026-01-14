@@ -29,6 +29,16 @@ class EnquiryController extends Controller
         return view('enquiries.create');
     }
 
+    public function privacyPolicy()
+    {
+        return view('public.privacy-policy');
+    }
+
+    public function termsConditions()
+    {
+        return view('public.terms-conditions');
+    }
+
     public function store(Request $request)
     {
         // If user is NOT logged in, defer submission
@@ -83,7 +93,7 @@ class EnquiryController extends Controller
 
         return $this->store(request());
     }
-
+    
     protected function sendNotifications(Enquiry $enquiry)
     {
         try {
