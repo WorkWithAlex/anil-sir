@@ -11,10 +11,10 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'roxstonit+omni-admin@gmail.com'],
+            ['email' => 'admin@omnioutsource.com'],
             [
                 'name' => 'Omni Admin',
-                'password' => Hash::make('Test@123'),
+                'password' => Hash::make('OmniAdmin@2026*'),
                 'role' => 'super_admin',
             ]
         );

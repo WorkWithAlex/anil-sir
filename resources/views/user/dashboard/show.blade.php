@@ -74,7 +74,7 @@
             </h3>
 
             <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ">
-                {{ $enquiry->remark ?? 'None...' }}
+                {{ $enquiry->admin_remarks ?? 'None...' }}
             </span>
             
 
@@ -108,7 +108,7 @@
 
             <div>
                 <span class="block text-slate-500">Employment type</span>
-                <span class="font-medium">{{ $enquiry->employment_type ?? '—' }}</span>
+                <span class="font-medium">{{ $enquiry->employment_type ? str_replace('_', ' ', ucfirst($enquiry->employment_type)) : '—' }}</span>
             </div>
 
             <div>
@@ -118,7 +118,7 @@
 
             <div>
                 <span class="block text-slate-500">Budget</span>
-                <span class="font-medium">{{ $enquiry->budget ?? '—' }}</span>
+                <span class="font-medium">{{ $enquiry->budget_currency }} {{ $enquiry->budget_amount }} {{ ucfirst($enquiry->budget_type) }}</span>
             </div>
 
             <div>
@@ -141,7 +141,7 @@
 
     {{-- Back --}}
     <div class="text-right">
-        <a href="{{ route('admin.enquiries.index') }}"
+        <a href="{{ route('user.dashboard') }}"
            class="text-sm font-medium text-slate-600 hover:text-slate-900">
             ← Back to enquiries
         </a>

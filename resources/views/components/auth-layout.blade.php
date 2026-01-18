@@ -10,7 +10,7 @@
     <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 bg-white shadow-lg rounded-lg overflow-hidden">
 
         {{-- Left branding --}}
-        <div class="hidden md:flex flex-col justify-center px-10 bg-gray-900 text-white">
+        <div class="hidden md:flex flex-col justify-center px-10 text-white" style="background-color: #008b8b;">
             <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }} Logo" class="mb-6 w-48">
             <h1 class="text-3xl font-bold mb-4">
                 {{ config('app.name') }}

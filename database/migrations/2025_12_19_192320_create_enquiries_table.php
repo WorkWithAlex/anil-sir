@@ -23,7 +23,9 @@ return new class extends Migration {
             $table->string('experience_required')->nullable();
             $table->string('employment_type')->nullable(); // Full-time, Contract, etc
             $table->string('location')->nullable();
-            $table->string('budget')->nullable();
+            $table->string('budget_currency', 3)->nullable();
+            $table->string('budget_amount')->nullable();
+            $table->string('budget_type')->nullable();
             $table->string('timeline')->nullable();
 
             // Additional info

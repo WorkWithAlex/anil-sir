@@ -76,7 +76,7 @@
             <div class="grid md:grid-cols-1 gap-6 text-sm">
                 <div>
                     <span class="mb-2 block text-slate-500">Remark</span>
-                    <span class="font-medium">{{ $enquiry->remark ?? 'None...' }}</span>
+                    <span class="font-medium">{{ $enquiry->admin_remarks ?? 'None...' }}</span>
                 </div>
             </div>
 
@@ -141,7 +141,7 @@
 
             <div>
                 <span class="mb-2 block text-slate-500">Employment type</span>
-                <span class="font-medium">{{ $enquiry->employment_type ?? '—' }}</span>
+                <span class="font-medium">{{ $enquiry->employment_type ? str_replace('_', ' ', ucfirst($enquiry->employment_type)) : '—' }}</span>
             </div>
 
             <div>
@@ -151,7 +151,7 @@
 
             <div>
                 <span class="mb-2 block text-slate-500">Budget</span>
-                <span class="font-medium">{{ $enquiry->budget ?? '—' }}</span>
+                <span class="font-medium">{{ $enquiry->budget_currency }} {{ $enquiry->budget_amount }} {{ ucfirst($enquiry->budget_type) }}</span>
             </div>
 
             <div>

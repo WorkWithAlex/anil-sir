@@ -62,7 +62,9 @@ class EnquiryController extends Controller
             'experience_required' => 'nullable|string|max:255',
             'employment_type' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
-            'budget' => 'nullable|string|max:255',
+            'budget_currency' => ['nullable', 'string', 'size:3'],
+            'budget_amount'   => ['nullable', 'string'],
+            'budget_type'     => ['nullable', 'in:monthly,fixed,hourly'],
             'timeline' => 'nullable|string|max:255',
             'message' => 'nullable|string',
         ]);
@@ -74,6 +76,8 @@ class EnquiryController extends Controller
         $validated['user_id'] = auth()->id();
 
         $enquiry = Enquiry::create($validated);
+
+        session(['last_budget_currency' => $request->budget_currency]);
 
         $this->sendNotifications($enquiry, $request);
 

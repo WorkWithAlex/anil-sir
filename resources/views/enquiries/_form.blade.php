@@ -91,10 +91,9 @@
                 <select name="employment_type"
                         class="w-full rounded-lg border-slate-300 focus:border-brand-teal focus:ring-brand-teal">
                     <option value="">Select</option>
-                    <option>Full Time</option>
-                    <option>Part Time</option>
-                    <option>Contract</option>
-                    <option>Remote</option>
+                    <option value="full_time">Full Time</option>
+                    <option value="contract">Contract</option>
+                    <option value="remote">Remote</option>
                 </select>
             </div>
 
@@ -106,8 +105,51 @@
         <h2 class="text-xl font-semibold text-brand-navy mb-8">
             Logistics & expectations
         </h2>
+        
+        <div class="grid grid-cols-1 gap-8">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">
+                    Budget
+                </label>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="flex gap-3">
+
+                    {{-- Currency --}}
+                    <select name="budget_currency"
+                            class="w-28 rounded-lg border-slate-300 focus:border-brand-teal focus:ring-brand-teal">
+                        @php
+                            $defaultCurrency = old('budget_currency', session('last_budget_currency', 'USD'));
+                        @endphp
+
+                        @foreach(config('currencies') as $code => $name)
+                            <option value="{{ $code }}" @selected($defaultCurrency === $code)>
+                                {{ $code }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    {{-- Amount --}}
+                    <input type="text"
+                        name="budget_amount"
+                        inputmode="numeric"
+                        placeholder="Amount"
+                        value="{{ old('budget_amount') }}"
+                        class="flex-1 rounded-lg border-slate-300 focus:border-brand-teal focus:ring-brand-teal js-currency">
+
+                    {{-- Type --}}
+                    <select name="budget_type"
+                            class="w-36 rounded-lg border-slate-300 focus:border-brand-teal focus:ring-brand-teal">
+                        <option value="">Type</option>
+                        <option value="monthly" @selected(old('budget_type') === 'monthly')>Monthly</option>
+                        <option value="fixed"   @selected(old('budget_type') === 'fixed')>Fixed</option>
+                        <option value="hourly"  @selected(old('budget_type') === 'hourly')>Hourly</option>
+                    </select>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
 
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-2">
@@ -119,23 +161,15 @@
 
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-2">
-                    Budget
-                </label>
-                <input type="text" name="budget" placeholder="₹ / Month or Fixed"
-                       value="{{ old('budget') }}"
-                       class="w-full rounded-lg border-slate-300 focus:border-brand-teal focus:ring-brand-teal">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2">
                     Timeline
                 </label>
                 <input type="text" name="timeline" placeholder="Immediate / 2 weeks"
                        value="{{ old('timeline') }}"
                        class="w-full rounded-lg border-slate-300 focus:border-brand-teal focus:ring-brand-teal">
             </div>
-
+            
         </div>
+
     </div>
 
     {{-- ADDITIONAL NOTES --}}
@@ -162,3 +196,17 @@
     </div>
 
 </form>
+
+<script>
+document.addEventListener('input', function (e) {
+    if (!e.target.classList.contains('js-currency')) return;
+
+    let value = e.target.value.replace(/,/g, '').replace(/\D/g, '');
+    if (!value) {
+        e.target.value = '';
+        return;
+    }
+
+    e.target.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+});
+</script>
